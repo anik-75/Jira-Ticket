@@ -67,7 +67,7 @@ body {
 }
 
 .modal{
-  display: flex;
+  display: none;
   /* margin: 5rem; */
   width: 45vw;
   height:50vh;
@@ -93,3 +93,31 @@ textarea{
   align-items: center;
 }
 
+.main{
+  display: flex;
+  margin:2rem;
+  /* justify-content: space-around; */
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ticket{
+  height:16rem;
+  width:16rem;
+  margin: 2rem;
+  background-color: lightblue;
+}
+
+.ticketPriority{
+  background-color: lightpink;
+  height:1rem;
+}
+
+.ticketId{
+  background-color: lightgreen;
+  height:2rem;
+}
+
+.ticketTask{
+  height: calc(16rem - 1rem - 2rem);
+  padding: 1rem;
+}
