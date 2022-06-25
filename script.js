@@ -33,9 +33,18 @@ addBtn.addEventListener("click", (e) => {
   }
 });
 
+removeBtn.addEventListener("click", (e) => {
+  removeFlag = !removeFlag;
+  if (removeFlag) {
+    e.currentTarget.style.backgroundColor = "red";
+  } else {
+    e.currentTarget.style.cssText = "backgroundColor:#485460; ";
+  }
+  console.log(e.currentTarget);
+});
 function handleRemove(ticket) {
   ticket.addEventListener("click", (e) => {
-    if(!removeFlag){ 
+    if (!removeFlag) {
       return;
     }
     ticket.remove();
@@ -44,24 +53,28 @@ function handleRemove(ticket) {
 
 modal.addEventListener("keydown", (e) => {
   if (e.key === "Shift") {
-    createTicket(shortid(), textArea.value, defaultColor);
+    createTicket(null, textArea.value, defaultColor);
     modal.style.display = "none";
     addFlag = false;
+    setDefault();
   }
 });
 
 function createTicket(ticketId, ticketTask, ticketPriorityColor) {
+  let id = ticketId || shortid();
   let main = document.querySelector(".main");
   let ticketCont = document.createElement("div");
   ticketCont.classList.add("ticket");
   ticketCont.innerHTML = `
         <div class="ticketPriority ${ticketPriorityColor}"></div>
-        <div class="ticketId">${ticketId}</div>
+        <div class="ticketId">${id}</div>
         <div class="ticketTask">${ticketTask}</div>
        <div class="lock"><i class="fa-solid fa-lock"></i></div>
         `;
   main.appendChild(ticketCont);
-  ticketObj.push({ ticketPriorityColor, ticketId, ticketTask });
+  if (ticketId != id) {
+    ticketObj.push({ ticketPriorityColor, id, ticketTask });
+  }
   handleLock(ticketCont);
   handleColor(ticketCont);
   handleRemove(ticketCont);
@@ -105,6 +118,34 @@ function handleColor(ticketCont) {
 let filterPriorityColors = document.querySelectorAll(".color");
 filterPriorityColors.forEach((filterPriorityColor) => {
   filterPriorityColor.addEventListener("click", (e) => {
-    ticketObj.filter();
+    let filteredlist = ticketObj.filter((ticket) => {
+      return ticket.ticketPriorityColor === filterPriorityColor.classList[0];
+    });
+    console.log(filteredlist);
+
+    let allTickets = document.querySelectorAll(".ticket");
+    for (let ticket of allTickets) {
+      ticket.remove();
+    }
+
+    filteredlist.forEach((ticket) => {
+      // console.log(ticket);
+      createTicket(ticket.id, ticket.ticketTask, ticket.ticketPriorityColor);
+    });
+  });
+
+  filterPriorityColor.addEventListener("dblclick", (e) => {
+    ticketObj.forEach((ticket) => {
+      createTicket(ticket.id, ticket.ticketTask, ticket.ticketPriorityColor);
+    });
   });
 });
+
+function setDefault() {
+  textArea.value = "";
+  defaultColor = allPriorityColors[allPriorityColors.length - 1];
+  priorityColors.forEach((pColor)=>{
+    pColor.classList.remove('border');
+  });
+  priorityColors[priorityColors.length-1].classList.add('border');
+}
